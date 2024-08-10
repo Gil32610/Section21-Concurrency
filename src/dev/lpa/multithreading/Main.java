@@ -6,8 +6,14 @@ public class Main {
     public static void main(String[] args) {
         StopWatch stopWatch = new StopWatch(TimeUnit.SECONDS);
         Thread green = new Thread(stopWatch::countDown, ThreadColor.ANSI_GREEN.name());
-        Thread purple = new Thread(() -> stopWatch.countDown(7), ThreadColor.ANSI_PURPLE.name());
+        Thread purple = new Thread(() -> stopWatch.countDown(12), ThreadColor.ANSI_PURPLE.name());
         Thread red = new Thread(stopWatch::countDown, ThreadColor.ANSI_RED.name());
+        Thread white = new Thread(stopWatch::countDown, ThreadColor.ANSI_WHITE.name());
+        Thread black = new Thread(() -> stopWatch.countDown(20), ThreadColor.ANSI_BLACK.name());
+        Thread blue = new Thread(stopWatch::countDown, ThreadColor.ANSI_BLUE.name());
+        white.start();
+        black.start();
+        blue.start();
         green.start();
         purple.start();
         red.start();
@@ -22,7 +28,7 @@ class StopWatch {
     }
 
     public void countDown() {
-        countDown(5);
+        countDown(30);
     }
 
     public void countDown(int unitCountDown) {
