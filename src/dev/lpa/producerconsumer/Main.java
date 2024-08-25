@@ -9,18 +9,39 @@ class MessageRepository {
     private boolean hasMessage = false;
 
     public synchronized String read() {
-        while (!hasMessage) {
 
+        //Any code that is in a sync method that's sitting in a loop (waiting for something to change),
+        //should be calling the wait method!
+        // Suspends sync claims on the object, while thread waits for some condition to be met (doesn't block other threads)
+        while (!hasMessage) {
+            try {
+                //Causes the current thread to place itself on a wait set condition, releasing the synchronization claims
+                // Allows any other threads to acquire the lock (monitor) while on waiting state/set.
+                wait();
+                // dormant
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
+        //When a thread gets waked up, it doesn't mean that the condition it was waiting on was met
+        // That's why we call the wait method inside a loop. The thread will check the condition it is interested in repeatedly
         hasMessage = false;
+        notifyAll();
+        //Wakes up all threads that are waiting on the local monitor (on the shared resource sync.)
+        //Don't use it when multiple threads are performing the same task (performance issue!!)
         return message;
     }
 
     public synchronized void write(String message) {
         while (hasMessage) {
-
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
         hasMessage = true;
+        notifyAll();
         this.message = message;
     }
 }
@@ -97,6 +118,8 @@ public class Main {
 
         reader.start();
         writer.start();
+
+        // Using wait, notify and notifyAll methods to manage monitor locks (sync.)
 
 
     }
