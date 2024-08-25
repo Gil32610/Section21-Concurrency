@@ -2,11 +2,14 @@ package dev.lpa.concurrencychallenge;
 
 import java.util.Random;
 
-public class OrderConsumer implements  Runnable{
-private ShoeWareHouse wareHouse;
+public class OrderConsumer implements Runnable {
+    private ShoeWareHouse wareHouse;
+
+    private int ordersConsumed;
 
     public OrderConsumer(ShoeWareHouse wareHouse) {
         this.wareHouse = wareHouse;
+        this.ordersConsumed = 0;
     }
 
     @Override
@@ -19,6 +22,8 @@ private ShoeWareHouse wareHouse;
                 throw new RuntimeException(e);
             }
             wareHouse.fulfillOrder();
+
+            System.out.println("Current orders consumed: "+ ++ordersConsumed);
         }
     }
 }
